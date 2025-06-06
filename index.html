@@ -9,7 +9,7 @@
     body {
       background-color: whitesmoke;
       color: black;
-      font-family: sans-serif;
+      font-family: 'Helvetica Neue', sans-serif;
       margin: 20px;
     }
     h1 {
@@ -20,13 +20,15 @@
       width: 100%;
       border-collapse: collapse;
       background-color: white;
-      overflow-x: auto;
-      display: block;
+      margin-bottom: 20px;
     }
     th, td {
-      border: 1px solid #999;
+      border: 1px solid #ccc;
       padding: 8px;
       text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
     }
     hr {
       border: none;
@@ -40,6 +42,21 @@
       text-decoration: none;
       color: slateblue;
     }
+    .button {
+      display: inline-block;
+      padding: 12px 20px;
+      font-size: 1rem;
+      color: white;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      border: none;
+      border-radius: 30px;
+      text-decoration: none;
+      margin: 20px 0;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: linear-gradient(to right, #2575fc, #6a11cb);
+    }
   </style>
 </head>
 <body>
@@ -47,32 +64,38 @@
   <p>2024.5.30更新。</p>
   <hr>
 
-  <p><strong>【過去成績】</strong><br>
-  名前　　　　平均ポイント　　過去5年順位　　　ダ　オ　N　皐　桜　ホ　朝　阪<br>
-  ケミカル　　23302　　　　　２－１－３－３－２　１　２　０　１　１　１　０　１<br>
-  ババガンプ　21184　　　　　５－２－１－４－５　０　０　３　０　０　１　１　１<br>
-  沢庵　　　　19653　　　　　１－５－６－５－７　０　１　０　０　０　０　０　１<br>
-  ポセイ　　　19405　　　　　４－４－２－６－１　２　０　０　１　０　２　０　０<br>
-  DIM　　　　16243　　　　　６－６－７－１－４　１　０　０　１　０　０　０　０<br>
-  行くぞオィッ！14565　　　　３－３－４－８－６　０　０　０　０　１　０　０　０<br>
-  ティーケービー12457　　　　７－８－８－２－３　０　０　１　０　０　０　０　０
-  </p>
+  <h2>過去成績</h2>
+  <table>
+    <tr>
+      <th>名前</th><th>平均ポイント</th><th>過去5年順位</th><th>ダ</th><th>オ</th><th>N</th><th>皐</th><th>桜</th><th>ホ</th><th>朝</th><th>阪</th>
+    </tr>
+    <tr><td>ケミカル</td><td>23302</td><td>２－１－３－３－２</td><td>１</td><td>２</td><td>０</td><td>１</td><td>１</td><td>１</td><td>０</td><td>１</td></tr>
+    <tr><td>ババガンプ</td><td>21184</td><td>５－２－１－４－５</td><td>０</td><td>０</td><td>３</td><td>０</td><td>０</td><td>１</td><td>１</td><td>１</td></tr>
+    <tr><td>沢庵</td><td>19653</td><td>１－５－６－５－７</td><td>０</td><td>１</td><td>０</td><td>０</td><td>０</td><td>０</td><td>０</td><td>１</td></tr>
+    <tr><td>ポセイ</td><td>19405</td><td>４－４－２－６－１</td><td>２</td><td>０</td><td>０</td><td>１</td><td>０</td><td>２</td><td>０</td><td>０</td></tr>
+    <tr><td>DIM</td><td>16243</td><td>６－６－７－１－４</td><td>１</td><td>０</td><td>０</td><td>１</td><td>０</td><td>０</td><td>０</td><td>０</td></tr>
+    <tr><td>行くぞオィッ！</td><td>14565</td><td>３－３－４－８－６</td><td>０</td><td>０</td><td>０</td><td>０</td><td>１</td><td>０</td><td>０</td><td>０</td></tr>
+    <tr><td>ティーケービー</td><td>12457</td><td>７－８－８－２－３</td><td>０</td><td>０</td><td>１</td><td>０</td><td>０</td><td>０</td><td>０</td><td>０</td></tr>
+  </table>
 
-  <br>
+  <h2>2023-2024 シーズン結果</h2>
+  <table>
+    <tr>
+      <th>順位</th><th>名前</th><th>ポイント</th><th>成績</th><th>出走数</th><th>勝率</th><th>指名数</th>
+    </tr>
+    <tr><td>①</td><td>沢庵</td><td>29,380</td><td>15-05-02-22</td><td>44戦</td><td>34%</td><td>10</td></tr>
+    <tr><td>②</td><td>ケミカル</td><td>28,190</td><td>10-12-08-22</td><td>52戦</td><td>19%</td><td>10</td></tr>
+    <tr><td>③</td><td>行くぞオィッ！</td><td>20,130</td><td>08-02-05-28</td><td>43戦</td><td>18%</td><td>10</td></tr>
+    <tr><td>④</td><td>ポセイ</td><td>9,300</td><td>09-07-03-25</td><td>44戦</td><td>20%</td><td>10</td></tr>
+    <tr><td>⑤</td><td>ババガンプ</td><td>8,640</td><td>07-02-02-13</td><td>24戦</td><td>29%</td><td>10</td></tr>
+    <tr><td>⑥</td><td>ＤＩＭ</td><td>7,450</td><td>06-05-02-22</td><td>35戦</td><td>17%</td><td>10</td></tr>
+    <tr><td>⑦</td><td>ティーケービー</td><td>3,810</td><td>04-05-01-17</td><td>27戦</td><td>14%</td><td>10</td></tr>
+    <tr><td>⑧</td><td>寺川</td><td>2,850</td><td>03-05-03-17</td><td>28戦</td><td>10%</td><td>10</td></tr>
+  </table>
 
-  <p><strong>【2023-2024 シーズン結果】</strong><br>
-  ① 沢庵　　　29,380P　　15-05-02-22　　44戦　34%　指名数：10<br>
-  ② ケミカル　28,190P　　10-12-08-22　　52戦　19%　指名数：10<br>
-  ③ 行くぞオィッ！20,130P　08-02-05-28　43戦　18%　指名数：10<br>
-  ④ ポセイ　　 9,300P　　09-07-03-25　　44戦　20%　指名数：10<br>
-  ⑤ ババガンプ　8,640P　07-02-02-13　　24戦　29%　指名数：10<br>
-  ⑥ ＤＩＭ　　　7,450P　06-05-02-22　　35戦　17%　指名数：10<br>
-  ⑦ ティーケービー3,810P 04-05-01-17　27戦　14%　指名数：10<br>
-  ⑧ 寺川　　　　2,850P　03-05-03-17　　28戦　10%　指名数：10
-  </p>
+  <a class="button" href="syoyu.html">▶ 24-25 指名馬一覧</a>
 
   <div class="link-section">
-    <a href="syoyu.html">24-25 指名馬一覧</a>
     <a href="rank.html">◆ランキング</a>
     <a href="23-24.html">◆23-24シーズン：沢庵／ゴンバデカーブース</a>
     <a href="22-23.html">◆22-23シーズン：ケミカル／リバティアイランド</a>
