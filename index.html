@@ -16,11 +16,15 @@
       color: slateblue;
       font-size: 2em;
     }
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
     table {
       width: 100%;
+      min-width: 600px;
       border-collapse: collapse;
       background-color: white;
-      margin-bottom: 20px;
     }
     th, td {
       border: 1px solid #ccc;
@@ -36,13 +40,7 @@
       background-color: gold;
       margin: 20px 0;
     }
-    .link-section a {
-      display: block;
-      margin-bottom: 10px;
-      text-decoration: none;
-      color: slateblue;
-    }
-    .button {
+    .button-main {
       display: inline-block;
       padding: 12px 20px;
       font-size: 1rem;
@@ -54,8 +52,23 @@
       margin: 20px 0;
       transition: background 0.3s;
     }
-    .button:hover {
+    .button-main:hover {
       background: linear-gradient(to right, #2575fc, #6a11cb);
+    }
+    .link-buttons a {
+      display: inline-block;
+      padding: 8px 16px;
+      margin: 5px 5px 5px 0;
+      border-radius: 20px;
+      text-decoration: none;
+      color: white;
+      font-size: 0.95rem;
+    }
+    .link-buttons a.rank {
+      background-color: orange;
+    }
+    .link-buttons a.season {
+      background-color: slateblue;
     }
   </style>
 </head>
@@ -65,6 +78,7 @@
   <hr>
 
   <h2>過去成績</h2>
+  <div class="table-wrapper">
   <table>
     <tr>
       <th>名前</th><th>平均ポイント</th><th>過去5年順位</th><th>ダ</th><th>オ</th><th>N</th><th>皐</th><th>桜</th><th>ホ</th><th>朝</th><th>阪</th>
@@ -77,38 +91,41 @@
     <tr><td>行くぞオィッ！</td><td>14565</td><td>３－３－４－８－６</td><td>０</td><td>０</td><td>０</td><td>０</td><td>１</td><td>０</td><td>０</td><td>０</td></tr>
     <tr><td>ティーケービー</td><td>12457</td><td>７－８－８－２－３</td><td>０</td><td>０</td><td>１</td><td>０</td><td>０</td><td>０</td><td>０</td><td>０</td></tr>
   </table>
+  </div>
 
   <h2>2023-2024 シーズン結果</h2>
+  <div class="table-wrapper">
   <table>
     <tr>
-      <th>順位</th><th>名前</th><th>ポイント</th><th>成績</th><th>出走数</th><th>勝率</th><th>指名数</th>
+      <th>順位</th><th>名前</th><th>ポイント</th><th>成績</th><th>出走数</th><th>勝率</th>
     </tr>
-    <tr><td>①</td><td>沢庵</td><td>29,380</td><td>15-05-02-22</td><td>44戦</td><td>34%</td><td>10</td></tr>
-    <tr><td>②</td><td>ケミカル</td><td>28,190</td><td>10-12-08-22</td><td>52戦</td><td>19%</td><td>10</td></tr>
-    <tr><td>③</td><td>行くぞオィッ！</td><td>20,130</td><td>08-02-05-28</td><td>43戦</td><td>18%</td><td>10</td></tr>
-    <tr><td>④</td><td>ポセイ</td><td>9,300</td><td>09-07-03-25</td><td>44戦</td><td>20%</td><td>10</td></tr>
-    <tr><td>⑤</td><td>ババガンプ</td><td>8,640</td><td>07-02-02-13</td><td>24戦</td><td>29%</td><td>10</td></tr>
-    <tr><td>⑥</td><td>ＤＩＭ</td><td>7,450</td><td>06-05-02-22</td><td>35戦</td><td>17%</td><td>10</td></tr>
-    <tr><td>⑦</td><td>ティーケービー</td><td>3,810</td><td>04-05-01-17</td><td>27戦</td><td>14%</td><td>10</td></tr>
-    <tr><td>⑧</td><td>寺川</td><td>2,850</td><td>03-05-03-17</td><td>28戦</td><td>10%</td><td>10</td></tr>
+    <tr><td>①</td><td>沢庵</td><td>29,380</td><td>15-05-02-22</td><td>44戦</td><td>34%</td></tr>
+    <tr><td>②</td><td>ケミカル</td><td>28,190</td><td>10-12-08-22</td><td>52戦</td><td>19%</td></tr>
+    <tr><td>③</td><td>行くぞオィッ！</td><td>20,130</td><td>08-02-05-28</td><td>43戦</td><td>18%</td></tr>
+    <tr><td>④</td><td>ポセイ</td><td>9,300</td><td>09-07-03-25</td><td>44戦</td><td>20%</td></tr>
+    <tr><td>⑤</td><td>ババガンプ</td><td>8,640</td><td>07-02-02-13</td><td>24戦</td><td>29%</td></tr>
+    <tr><td>⑥</td><td>ＤＩＭ</td><td>7,450</td><td>06-05-02-22</td><td>35戦</td><td>17%</td></tr>
+    <tr><td>⑦</td><td>ティーケービー</td><td>3,810</td><td>04-05-01-17</td><td>27戦</td><td>14%</td></tr>
+    <tr><td>⑧</td><td>寺川</td><td>2,850</td><td>03-05-03-17</td><td>28戦</td><td>10%</td></tr>
   </table>
+  </div>
 
-  <a class="button" href="syoyu.html">▶ 24-25 指名馬一覧</a>
+  <a class="button-main" href="syoyu.html">▶ 24-25 指名馬一覧</a>
 
-  <div class="link-section">
-    <a href="rank.html">◆ランキング</a>
-    <a href="23-24.html">◆23-24シーズン：沢庵／ゴンバデカーブース</a>
-    <a href="22-23.html">◆22-23シーズン：ケミカル／リバティアイランド</a>
-    <a href="21-22.html">◆21-22シーズン：ババガンプ／ダノンスコーピオン</a>
-    <a href="20-21.html">◆20-21シーズン：ＤＩＭ／シャフリヤール</a>
-    <a href="19-20.html">◆19-20シーズン：ポセイ／サリオス</a>
-    <a href="18-19.html">◆18-19シーズン：ケミカル／ロジャーバローズ</a>
-    <a href="17-18.html">◆17-18シーズン：ポセイ／ステルヴィオ</a>
-    <a href="16-17.html">◆16-17シーズン：ババガンプ／アドミラブル</a>
-    <a href="15-16.html">◆15-16シーズン：沢庵／サトノダイヤモンド</a>
-    <a href="14-15.html">◆14-15シーズン：ポセイ／ドゥラメンテ</a>
-    <a href="13-14.html">◆13-14シーズン：直衛大尉／ハープスター</a>
-    <a href="12-13.html">◆12-13シーズン：やすたく／キズナ</a>
+  <div class="link-buttons">
+    <a href="rank.html" class="rank">◆ランキング</a>
+    <a href="23-24.html" class="season">23-24：沢庵／ゴンバデカーブース</a>
+    <a href="22-23.html" class="season">22-23：ケミカル／リバティアイランド</a>
+    <a href="21-22.html" class="season">21-22：ババガンプ／ダノンスコーピオン</a>
+    <a href="20-21.html" class="season">20-21：ＤＩＭ／シャフリヤール</a>
+    <a href="19-20.html" class="season">19-20：ポセイ／サリオス</a>
+    <a href="18-19.html" class="season">18-19：ケミカル／ロジャーバローズ</a>
+    <a href="17-18.html" class="season">17-18：ポセイ／ステルヴィオ</a>
+    <a href="16-17.html" class="season">16-17：ババガンプ／アドミラブル</a>
+    <a href="15-16.html" class="season">15-16：沢庵／サトノダイヤモンド</a>
+    <a href="14-15.html" class="season">14-15：ポセイ／ドゥラメンテ</a>
+    <a href="13-14.html" class="season">13-14：直衛大尉／ハープスター</a>
+    <a href="12-13.html" class="season">12-13：やすたく／キズナ</a>
   </div>
 
   <hr>
