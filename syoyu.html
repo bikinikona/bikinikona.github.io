@@ -64,12 +64,12 @@
         const horse = row[1];
         const sire = row[2];
         const dam = row[3];
-        const link = row[4];
         const record = row[5];
         const point = row[6];
+        const link = row[7];  // ★ ここを8列目(index 7)に変更
 
         if (!grouped[member]) grouped[member] = [];
-        grouped[member].push({ horse, sire, dam, link, record, point });
+        grouped[member].push({ horse, sire, dam, record, point, link });
       });
 
       let html = "";
