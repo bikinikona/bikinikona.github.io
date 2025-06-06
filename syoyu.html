@@ -26,7 +26,6 @@
     th, td {
       border: 1px solid #aaa;
       padding: 6px;
-      text-align: center;
       width: 120px;
       overflow: hidden;
       white-space: nowrap;
@@ -34,6 +33,12 @@
     }
     th {
       background-color: #d0e0f0;
+    }
+    td.left {
+      text-align: left;
+    }
+    td.right {
+      text-align: right;
     }
     a {
       text-decoration: none;
@@ -73,11 +78,11 @@
         html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           html += "<tr>";
-          html += `<td><a href="${entry.link}" target="_blank">${entry.horse}</a></td>`;
-          html += `<td>${entry.sire}</td>`;
-          html += `<td>${entry.dam}</td>`;
-          html += `<td>${entry.record}</td>`;
-          html += `<td>${entry.point}</td>`;
+          html += `<td class='left'><a href="${entry.link}" target="_blank">${entry.horse}</a></td>`;
+          html += `<td class='left'>${entry.sire}</td>`;
+          html += `<td class='left'>${entry.dam}</td>`;
+          html += `<td class='left'>${entry.record}</td>`;
+          html += `<td class='right'>${entry.point}</td>`;
           html += "</tr>";
         });
         html += "</tbody></table>";
