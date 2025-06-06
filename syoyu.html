@@ -18,14 +18,19 @@
     }
     table {
       border-collapse: collapse;
-      width: 100%;
+      width: auto;
       background-color: white;
       margin-bottom: 20px;
+      table-layout: fixed;
     }
     th, td {
       border: 1px solid #aaa;
       padding: 6px;
       text-align: center;
+      width: 120px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     th {
       background-color: #d0e0f0;
@@ -55,20 +60,24 @@
         const sire = row[2];
         const dam = row[3];
         const link = row[4];
+        const record = row[5];
+        const point = row[6];
 
         if (!grouped[member]) grouped[member] = [];
-        grouped[member].push({ horse, sire, dam, link });
+        grouped[member].push({ horse, sire, dam, link, record, point });
       });
 
       let html = "";
       for (const member in grouped) {
         html += `<h2>${member}</h2>`;
-        html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th></tr></thead><tbody>";
+        html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           html += "<tr>";
           html += `<td><a href="${entry.link}" target="_blank">${entry.horse}</a></td>`;
           html += `<td>${entry.sire}</td>`;
           html += `<td>${entry.dam}</td>`;
+          html += `<td>${entry.record}</td>`;
+          html += `<td>${entry.point}</td>`;
           html += "</tr>";
         });
         html += "</tbody></table>";
