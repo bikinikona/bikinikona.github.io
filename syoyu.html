@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>24-25 指名馬一覧（リアルタイム連動）</title>
+  <title>24-25 指名馬一覧（性別カラー表示）</title>
   <style>
     body {
       font-family: sans-serif;
@@ -42,7 +42,7 @@
     }
     a {
       text-decoration: none;
-      color: #003399;
+      color: inherit;
     }
   </style>
 </head>
@@ -66,10 +66,11 @@
         const dam = row[3];
         const record = row[5];
         const point = row[6];
-        const link = row[7];  // ★ ここを8列目(index 7)に変更
+        const link = row[7];
+        const gender = row[8];  // 9列目（index 8）に性別
 
         if (!grouped[member]) grouped[member] = [];
-        grouped[member].push({ horse, sire, dam, record, point, link });
+        grouped[member].push({ horse, sire, dam, record, point, link, gender });
       });
 
       let html = "";
@@ -77,7 +78,12 @@
         html += `<h2>${member}</h2>`;
         html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
-          html += "<tr>";
+          let color = "";
+          if (entry.gender === "牡") color = "color: blue;";
+          else if (entry.gender === "牝") color = "color: red;";
+          else if (entry.gender === "セ") color = "color: purple;";
+
+          html += `<tr style="${color}">`;
           html += `<td class='left'><a href="${entry.link}" target="_blank">${entry.horse}</a></td>`;
           html += `<td class='left'>${entry.sire}</td>`;
           html += `<td class='left'>${entry.dam}</td>`;
