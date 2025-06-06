@@ -67,7 +67,7 @@
         const record = row[5];
         const point = row[6];
         const link = row[7];
-        const gender = row[8];
+        const gender = row[8];  // 9列目に性別が入っている
 
         if (!grouped[member]) grouped[member] = [];
         grouped[member].push({ horse, sire, dam, record, point, link, gender });
@@ -78,12 +78,12 @@
         html += `<h2>${member}</h2>`;
         html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
-          let color = "";
-          if (entry.gender === "牡") color = "color: blue;";
-          else if (entry.gender === "牝") color = "color: red;";
-          else if (entry.gender === "セ") color = "color: purple;";
+          let colorStyle = "";
+          if (entry.gender === "牡") colorStyle = "color: blue;";
+          else if (entry.gender === "牝") colorStyle = "color: red;";
+          else if (entry.gender === "セ") colorStyle = "color: purple;";
 
-          html += `<tr style="${color}">`;
+          html += `<tr style='${colorStyle}'>`;
           html += `<td class='left'><a href="${entry.link}">${entry.horse}</a></td>`;
           html += `<td class='left'>${entry.sire}</td>`;
           html += `<td class='left'>${entry.dam}</td>`;
