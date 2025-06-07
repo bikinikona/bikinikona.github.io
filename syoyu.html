@@ -53,7 +53,7 @@
       width: 40px;
       height: 40px;
       vertical-align: middle;
-      margin-left: 5px;
+      margin-right: 5px;
     }
   </style>
 </head>
@@ -65,14 +65,12 @@
     function generateShoubufukuSVG(description) {
       if (!description) return "";
       const parts = description.split(/[、,]/).map(p => p.trim());
-      
       const colorMap = {
         "白": "white", "黒": "black", "赤": "red", "青": "blue",
         "黄": "yellow", "緑": "green", "桃": "pink", "水色": "skyblue", "紫": "purple"
       };
       const rawBodyColor = parts[0] || "白";
       const bodyColor = colorMap[rawBodyColor] || "white";
-    
       const pattern = parts[1] || "";
       const sleeve = parts[2] || "";
 
@@ -91,15 +89,10 @@
         `;
       }
 
-      
       let sleeveColor = "white";
       if (sleeve.includes("袖")) {
         const rawSleeveColor = sleeve.replace("袖", "").replace("一本輪", "").trim();
         sleeveColor = colorMap[rawSleeveColor] || "white";
-      }
-    
-      if (sleeve.includes("袖")) {
-        sleeveColor = sleeve.replace("袖", "").replace("一本輪", "").trim();
       }
 
       return `
@@ -182,8 +175,9 @@
           else if (entry.gender === "牝") colorStyle = "color: red;";
           else if (entry.gender === "セ") colorStyle = "color: purple;";
 
+          const svg = generateShoubufukuSVG(entry.uniform);
           html += `<tr style='${colorStyle}'>`;
-          html += `<td class='left horse-name'><a href="${entry.link}">${entry.horse}</a>${generateShoubufukuSVG(entry.uniform)}</td>`;
+          html += `<td class='left horse-name'>${svg}<a href="${entry.link}">${entry.horse}</a></td>`;
           html += `<td class='left'>${entry.sire}</td>`;
           html += `<td class='left'>${entry.dam}</td>`;
           html += `<td class='left'>${entry.record}</td>`;
