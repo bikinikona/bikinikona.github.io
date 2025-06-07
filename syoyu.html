@@ -65,7 +65,14 @@
     function generateShoubufukuSVG(description) {
       if (!description) return "";
       const parts = description.split(/[、,]/).map(p => p.trim());
-      const bodyColor = parts[0] || "white";
+      
+      const colorMap = {
+        "白": "white", "黒": "black", "赤": "red", "青": "blue",
+        "黄": "yellow", "緑": "green", "桃": "pink", "水色": "skyblue", "紫": "purple"
+      };
+      const rawBodyColor = parts[0] || "白";
+      const bodyColor = colorMap[rawBodyColor] || "white";
+    
       const pattern = parts[1] || "";
       const sleeve = parts[2] || "";
 
@@ -84,7 +91,13 @@
         `;
       }
 
+      
       let sleeveColor = "white";
+      if (sleeve.includes("袖")) {
+        const rawSleeveColor = sleeve.replace("袖", "").replace("一本輪", "").trim();
+        sleeveColor = colorMap[rawSleeveColor] || "white";
+      }
+    
       if (sleeve.includes("袖")) {
         sleeveColor = sleeve.replace("袖", "").replace("一本輪", "").trim();
       }
