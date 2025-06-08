@@ -138,7 +138,7 @@
 
 let html = "";
       for (const member in grouped) {
-        html += `<h2>${member}<span class="point-badge">🏆 合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
+        html += `<h2>${member}<span class="point-badge">合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
         html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           let colorStyle = "";
