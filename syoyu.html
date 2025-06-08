@@ -48,7 +48,18 @@
       font-weight: bold;
       font-size: 1.1em;
     }
-  </style>
+  
+    .point-badge {
+      display: inline-block;
+      background-color: #003366;
+      color: white;
+      font-size: 0.8em;
+      padding: 3px 8px;
+      margin-left: 10px;
+      border-radius: 10px;
+    }
+
+</style>
 </head>
 <body>
   <h1>2025-2026 指名馬一覧</h1>
@@ -114,9 +125,20 @@
         grouped[member].push({ horse, sire, dam, record, point, link, gender });
       });
 
-      let html = "";
+      
+      const memberTotals = {};
       for (const member in grouped) {
-        html += `<h2>${member}</h2>`;
+        let total = 0;
+        grouped[member].forEach(entry => {
+          const pt = parseInt(entry.point.replace(/[, ptPTｐｔ]/g, '')) || 0;
+          total += pt;
+        });
+        memberTotals[member] = total;
+      }
+
+let html = "";
+      for (const member in grouped) {
+        html += `<h2>${member}<span class="point-badge">🏆 合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
         html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           let colorStyle = "";
