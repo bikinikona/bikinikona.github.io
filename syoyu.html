@@ -49,35 +49,14 @@
       font-size: 1.1em;
     }
   
-    .ranking-section {
-      margin-top: 60px;
-    }
-    .ranking-section h2 {
-      color: #003366;
-      margin-bottom: 10px;
-      border-bottom: 2px solid #ccc;
-    }
-    .ranking-table {
-      width: 100%;
-      max-width: 600px;
-      border-collapse: collapse;
-      margin-bottom: 40px;
-    }
-    .ranking-table th, .ranking-table td {
-      border: 1px solid #aaa;
-      padding: 6px;
-      text-align: left;
-    }
-    .ranking-table th {
+    .point-badge {
+      display: inline-block;
       background-color: #003366;
       color: white;
-    }
-    .ranking-table td:nth-child(1) {
-      text-align: center;
-      width: 50px;
-    }
-    .ranking-table td:last-child {
-      text-align: right;
+      font-size: 0.8em;
+      padding: 3px 8px;
+      margin-left: 10px;
+      border-radius: 10px;
     }
 
 </style>
@@ -146,9 +125,20 @@
         grouped[member].push({ horse, sire, dam, record, point, link, gender });
       });
 
-      let html = "";
+      
+      const memberTotals = {};
       for (const member in grouped) {
-        html += `<h2>${member}</h2>`;
+        let total = 0;
+        grouped[member].forEach(entry => {
+          const pt = parseInt(entry.point.replace(/[, ptPTｐｔ]/g, '')) || 0;
+          total += pt;
+        });
+        memberTotals[member] = total;
+      }
+
+let html = "";
+      for (const member in grouped) {
+        html += `<h2>${member}<span class="point-badge">合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
         html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           let colorStyle = "";
@@ -168,42 +158,9 @@
       }
 
       document.getElementById("table-container").innerHTML = html;
-
-      // === Generate Rankings ===
-      const userTotals = Object.entries(memberTotals)
-        .map(([name, total]) => ({ name, total }))
-        .sort((a, b) => b.total - a.total);
-
-      const horseList = [];
-      for (const member in grouped) {
-        grouped[member].forEach(entry => {
-          const pt = parseInt(entry.point.replace(/[, ptPTｐｔ]/g, '')) || 0;
-          horseList.push({ horse: entry.horse, member, point: pt });
-        });
-      }
-      horseList.sort((a, b) => b.point - a.point);
-
-      let rankingHTML = "";
-      rankingHTML += "<h2>ユーザーランキング</h2>";
-      rankingHTML += "<table class='ranking-table'><thead><tr><th>順位</th><th>メンバー</th><th>合計ポイント</th></tr></thead><tbody>";
-      userTotals.forEach((u, i) => {
-        rankingHTML += `<tr><td>${i + 1}</td><td>${u.name}</td><td>${u.total.toLocaleString()}pt</td></tr>`;
-      });
-      rankingHTML += "</tbody></table>";
-
-      rankingHTML += "<h2>馬ランキング</h2>";
-      rankingHTML += "<table class='ranking-table'><thead><tr><th>順位</th><th>馬名</th><th>メンバー</th><th>ポイント</th></tr></thead><tbody>";
-      horseList.forEach((h, i) => {
-        rankingHTML += `<tr><td>${i + 1}</td><td>${h.horse}</td><td>${h.member}</td><td>${h.point.toLocaleString()}pt</td></tr>`;
-      });
-      rankingHTML += "</tbody></table>";
-
-      document.getElementById("rankings").innerHTML = rankingHTML;
-
     }
 
     loadCSV();
   </script>
-<div id="rankings" class="ranking-section">読み込み中...</div>
 </body>
 </html>
