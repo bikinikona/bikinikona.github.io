@@ -161,6 +161,33 @@ let html = "";
     }
 
     loadCSV();
+
+loadAdditionalCSV(
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=168257426&single=true&output=csv',
+  'summary-table',
+  true,
+  null,
+  false,
+  true
+);
+
+loadAdditionalCSV(
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv',
+  'ranking-table',
+  true,
+  20,
+  true
+);
+
   </script>
+
+<hr style="margin: 40px 0; border: none; border-top: 3px solid #999;">
+<h2>成績</h2>
+<div id="summary-table" class="fancy-table">読み込み中...</div>
+
+<hr style="margin: 40px 0; border: none; border-top: 3px dashed #ccc;">
+<h2>馬ポイントランキング（上位20頭）</h2>
+<div id="ranking-table" class="fancy-table">読み込み中...</div>
+
 </body>
 </html>
