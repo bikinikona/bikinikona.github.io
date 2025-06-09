@@ -59,40 +59,6 @@
       border-radius: 10px;
     }
 
-
-.fancy-table table {
-  table-layout: auto;
-  width: 90%;
-  max-width: 1000px;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100%;
-  border-collapse: collapse;
-  margin: 20px 0;
-  background-color: #fff;
-}
-.fancy-table th {
-  background-color: #003366;
-  color: white;
-  padding: 8px;
-}
-.fancy-table td {
-  border: 1px solid #ccc;
-  padding: 6px;
-  text-align: center;
-}
-.fancy-table tr:nth-child(even) {
-  background-color: #f2f6fa;
-}
-
-
-.fancy-table td.left, .fancy-table th.left {
-  text-align: left;
-}
-.fancy-table td.right, .fancy-table th.right {
-  text-align: right;
-}
-
 </style>
 </head>
 <body>
@@ -196,71 +162,5 @@ let html = "";
 
     loadCSV();
   </script>
-
-<hr style="margin: 40px 0; border: none; border-top: 3px solid #999;">
-<h2>成績</h2>
-<div id="summary-table" class="fancy-table">読み込み中...</div>
-
-<hr style="margin: 40px 0; border: none; border-top: 3px dashed #ccc;">
-<h2>馬ポイントランキング（上位20頭）</h2>
-<div id="ranking-table" class="fancy-table">読み込み中...</div>
-
-<script>
-async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null, removeZeroPoint = false, sortByLastColumn = false) {
-  const res = await fetch(url);
-  const text = await res.text();
-  const rows = text.trim().split("\n").map(r => r.split(","));
-  const headers = titleRow ? rows[0] : [];
-  let data = titleRow ? rows.slice(1) : rows;
-
-  if (sortByLastColumn) {
-    data.sort((a, b) => {
-      const valA = parseInt(a[a.length - 1].replace(/[^\d]/g, '')) || 0;
-      const valB = parseInt(b[b.length - 1].replace(/[^\d]/g, '')) || 0;
-      return valB - valA;
-    });
-  }
-
-  let html = "<table><thead><tr>";
-  headers.forEach(h => html += `<th>${h}</th>`);
-  html += "</tr></thead><tbody>";
-
-  let count = 0;
-  for (const row of data) {
-    const point = parseInt(row[headers.length - 1].replace(/[^\d]/g, '')) || 0;
-    if (removeZeroPoint && point === 0) continue;
-    html += "<tr>";
-    row.forEach((cell, idx) => {
-      let alignClass = '';
-      if (idx === 0 || idx === 1) alignClass = 'left'; // 所属・馬名など左
-      else alignClass = 'right'; // ポイントや成績は右
-      html += `<td class="${alignClass}">${cell}</td>`;
-    });
-    html += "</tr>";
-    count++;
-    if (rowLimit && count >= rowLimit) break;
-  }
-  html += "</tbody></table>";
-  document.getElementById(targetId).innerHTML = html;
-}
-
-loadAdditionalCSV(
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=168257426&single=true&output=csv',
-  'summary-table',
-  true,
-  null,
-  false,
-  true
-);
-
-loadAdditionalCSV(
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv',
-  'ranking-table',
-  true,
-  20,
-  true
-);
-</script>
-
 </body>
 </html>
