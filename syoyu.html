@@ -80,6 +80,14 @@
   background-color: #f2f6fa;
 }
 
+
+.fancy-table td.left, .fancy-table th.left {
+  text-align: left;
+}
+.fancy-table td.right, .fancy-table th.right {
+  text-align: right;
+}
+
 </style>
 </head>
 <body>
@@ -193,12 +201,20 @@ let html = "";
 <div id="ranking-table" class="fancy-table">読み込み中...</div>
 
 <script>
-async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null, removeZeroPoint = false) {
+async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null, removeZeroPoint = false, sortByLastColumn = false) {
   const res = await fetch(url);
   const text = await res.text();
   const rows = text.trim().split("\n").map(r => r.split(","));
   const headers = titleRow ? rows[0] : [];
-  const data = titleRow ? rows.slice(1) : rows;
+  let data = titleRow ? rows.slice(1) : rows;
+
+  if (sortByLastColumn) {
+    data.sort((a, b) => {
+      const valA = parseInt(a[a.length - 1].replace(/[^\d]/g, '')) || 0;
+      const valB = parseInt(b[b.length - 1].replace(/[^\d]/g, '')) || 0;
+      return valB - valA;
+    });
+  }
 
   let html = "<table><thead><tr>";
   headers.forEach(h => html += `<th>${h}</th>`);
@@ -209,7 +225,12 @@ async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null
     const point = parseInt(row[headers.length - 1].replace(/[^\d]/g, '')) || 0;
     if (removeZeroPoint && point === 0) continue;
     html += "<tr>";
-    row.forEach(cell => html += `<td>${cell}</td>`);
+    row.forEach((cell, idx) => {
+      let alignClass = '';
+      if (idx === 0 || idx === 1) alignClass = 'left'; // 所属・馬名など左
+      else alignClass = 'right'; // ポイントや成績は右
+      html += `<td class="${alignClass}">${cell}</td>`;
+    });
     html += "</tr>";
     count++;
     if (rowLimit && count >= rowLimit) break;
@@ -220,7 +241,11 @@ async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null
 
 loadAdditionalCSV(
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=168257426&single=true&output=csv',
-  'summary-table'
+  'summary-table',
+  true,
+  null,
+  false,
+  true
 );
 
 loadAdditionalCSV(
