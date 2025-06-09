@@ -162,5 +162,71 @@ let html = "";
 
     loadCSV();
   </script>
+
+<hr style="margin: 40px 0; border: none; border-top: 3px solid #999;">
+<h2>成績</h2>
+<div id="summary-table" class="fancy-table">読み込み中...</div>
+
+<hr style="margin: 40px 0; border: none; border-top: 3px dashed #ccc;">
+<h2>馬ポイントランキング（上位20頭）</h2>
+<div id="ranking-table" class="fancy-table">読み込み中...</div>
+
+<script>
+async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null, removeZeroPoint = false, sortColumnIndex = null) {
+  const res = await fetch(url);
+  const text = await res.text();
+  const rows = text.trim().split("\n").map(r => r.split(","));
+  const headers = titleRow ? rows[0] : [];
+  let data = titleRow ? rows.slice(1) : rows;
+
+  if (sortColumnIndex !== null) {
+    data.sort((a, b) => {
+      const valA = parseInt(a[sortColumnIndex].replace(/[^\d]/g, '')) || 0;
+      const valB = parseInt(b[sortColumnIndex].replace(/[^\d]/g, '')) || 0;
+      return valB - valA;
+    });
+  }
+
+  let html = "<table><thead><tr>";
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += "</tr></thead><tbody>";
+
+  let count = 0;
+  for (const row of data) {
+    const point = parseInt(row[headers.length - 1].replace(/[^\d]/g, '')) || 0;
+    if (removeZeroPoint && point === 0) continue;
+    html += "<tr>";
+    row.forEach((cell, idx) => {
+      let alignClass = (idx === 0 || idx === 1) ? 'left' : 'right';
+      html += `<td class="${alignClass}">${cell}</td>`;
+    });
+    html += "</tr>";
+    count++;
+    if (rowLimit && count >= rowLimit) break;
+  }
+  html += "</tbody></table>";
+  document.getElementById(targetId).innerHTML = html;
+}
+
+// 呼び出し
+loadAdditionalCSV(
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=168257426&single=true&output=csv',
+  'summary-table',
+  true,
+  null,
+  false,
+  6
+);
+
+loadAdditionalCSV(
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv',
+  'ranking-table',
+  true,
+  20,
+  true,
+  2
+);
+</script>
+
 </body>
 </html>
