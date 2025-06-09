@@ -69,6 +69,16 @@
   text-align: left;
 }
 
+
+.fancy-table td.right, .fancy-table th.right {
+  text-align: right;
+  max-width: 50px;
+  white-space: nowrap;
+}
+.fancy-table td.left, .fancy-table th.left {
+  text-align: left;
+}
+
 </style>
 </head>
 <body>
@@ -209,6 +219,7 @@ async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null
     row.forEach((cell, idx) => {
       let alignClass = (idx === 0 || idx === 1) ? 'left' : 'right';
       html += `<td class="${alignClass}">${cell}</td>`;
+    });
     });
     html += "</tr>";
     count++;
