@@ -61,6 +61,11 @@
 
 
 .fancy-table table {
+  table-layout: auto;
+  width: 90%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0;
@@ -193,11 +198,11 @@ let html = "";
   </script>
 
 <hr style="margin: 40px 0; border: none; border-top: 3px solid #999;">
-<h2>指名数・成績・ポイント集計（所属別）</h2>
+<h2>成績</h2>
 <div id="summary-table" class="fancy-table">読み込み中...</div>
 
 <hr style="margin: 40px 0; border: none; border-top: 3px dashed #ccc;">
-<h2>馬ポイントランキング（上位20頭／0pt除外）</h2>
+<h2>馬ポイントランキング（上位20頭）</h2>
 <div id="ranking-table" class="fancy-table">読み込み中...</div>
 
 <script>
