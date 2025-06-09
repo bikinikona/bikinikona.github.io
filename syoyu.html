@@ -220,7 +220,6 @@ async function loadAdditionalCSV(url, targetId, titleRow = true, rowLimit = null
       let alignClass = (idx === 0 || idx === 1) ? 'left' : 'right';
       html += `<td class="${alignClass}">${cell}</td>`;
     });
-    });
     html += "</tr>";
     count++;
     if (rowLimit && count >= rowLimit) break;
