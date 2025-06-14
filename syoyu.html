@@ -30,7 +30,9 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-    }
+    
+  font-size: 14px;
+}
     th {
       background-color: #d0e0f0;
     }
@@ -81,22 +83,12 @@
 }
 
 
-.fancy-table td.left, .fancy-table th.left {
-  text-align: left;
-}
-.fancy-table td.right, .fancy-table th.right {
-  text-align: right;
-}
 
 
-.fancy-table td.right, .fancy-table th.right {
-  text-align: right;
-  max-width: 50px;
-  white-space: nowrap;
-}
-.fancy-table td.left, .fancy-table th.left {
-  text-align: left;
-}
+
+
+
+
 
 
 .fancy-table {
@@ -110,12 +102,17 @@
   padding: 4px 8px;
   white-space: nowrap;
 }
+
+
+
+
+.fancy-table td.left, .fancy-table th.left {
+  text-align: left;
+}
 .fancy-table td.right, .fancy-table th.right {
   text-align: right;
   max-width: 60px;
-}
-.fancy-table td.left, .fancy-table th.left {
-  text-align: left;
+  white-space: nowrap;
 }
 
 </style>
@@ -198,7 +195,7 @@
 let html = "";
       for (const member in grouped) {
         html += `<h2>${member}<span class="point-badge">合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
-        html += "<table><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
+        html += "<table class='fancy-table'><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           let colorStyle = "";
           if (entry.gender === "牡") colorStyle = "color: blue;";
@@ -251,7 +248,7 @@ async function loadAdditionalCSV(url, targetId, alignRule, titleRow = true, rowL
     });
   }
 
-  let html = "<table><thead><tr>";
+  let html = "<table class='fancy-table'><thead><tr>";
   headers.forEach(h => html += `<th>${h}</th>`);
   html += "</tr></thead><tbody>";
 
