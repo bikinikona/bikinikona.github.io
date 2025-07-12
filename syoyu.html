@@ -301,18 +301,17 @@ loadAdditionalCSV(
     const headers = rows[0];
  const data = rows.slice(1).map(row => {
   return {
-    member: row[0],
+   member: row[0],
     horse: row[1],
-    sire: row[2],
-    record: row[3],
-    point: parseInt(row[4].replace(/[^\d]/g, '')) || 0,
-    link: row[5],
-    gender: row[6]
+    record: row[2],
+    point: row[3],     // ← 正しいポイント
+    link: row[4],      // ← URL
+    gender: row[5]     // ← 性別
   };
 });
 
     const filtered = data.filter(d => d.point > 0);
-    filtered.sort((a, b) => b.point - a.point);
+   // filtered.sort((a, b) => b.point - a.point);
     const top20 = filtered.slice(0, 20);
 
     let html = "<table class='fancy-table'><thead><tr><th style='width: 20px; text-align: center;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
