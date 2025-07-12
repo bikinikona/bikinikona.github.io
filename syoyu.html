@@ -237,8 +237,8 @@ let html = "";
   async function loadTop20Ranking() {
     const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=678170996&single=true&output=csv');
     const text = await res.text();
-    const rows = text.trim().split("
-").map(r => r.split(","));
+    const rows = text.trim().split("\n"
+").map(r => r.split("\n","));
 
     const headers = rows[0];
     const data = rows.slice(1).map(row => {
@@ -280,6 +280,37 @@ let html = "";
 
   loadTop20Ranking();
 </script>
+</script>
+
+
+<script>
+  async function loadSummaryTable() {
+    const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=678170996&single=true&output=csv');
+    const text = await res.text();
+    const rows = text.trim().split("\n").map(r => r.split(","));
+    const headers = rows[0];
+    const data = rows.slice(1);
+
+    const grouped = {};
+    data.forEach(row => {
+      const member = row[0];
+      const point = parseInt(row[6].replace(/[, ptＰＴｐｔ]/g, '')) || 0;
+      if (!grouped[member]) grouped[member] = 0;
+      grouped[member] += point;
+    });
+
+    const sorted = Object.entries(grouped).sort((a, b) => b[1] - a[1]);
+
+    let html = "<table class='fancy-table'><thead><tr><th>所属</th><th>合計ポイント</th></tr></thead><tbody>";
+    sorted.forEach(([member, point]) => {
+      html += `<tr><td class='left'>${member}</td><td class='right'>${point.toLocaleString()}</td></tr>`;
+    });
+    html += "</tbody></table>";
+
+    document.getElementById("summary-table").innerHTML = html;
+  }
+
+  loadSummaryTable();
 </script>
 
 </body>
