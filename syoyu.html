@@ -70,5 +70,55 @@
 
     loadCSVandRender();
   </script>
+
+<h2>全体 馬ポイントランキング（上位20頭）</h2>
+<div id="ranking-table">読み込み中...</div>
+
+<script>
+  async function loadTop20Ranking() {
+    const res = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=678170996&single=true&output=csv');
+    const text = await res.text();
+    const rows = text.trim().split("\n").map(r => r.split(","));
+
+    const headers = rows[0];
+    const data = rows.slice(1).map(row => {
+      return {
+        member: row[0],
+        horse: row[1],
+        sire: row[2],
+        dam: row[3],
+        record: row[5],
+        point: parseInt(row[6].replace(/[, ptＰＴｐｔ]/g, '')) || 0,
+        link: row[7],
+        gender: row[8]
+      };
+    });
+
+    data.sort((a, b) => b.point - a.point);
+    const top20 = data.slice(0, 20);
+
+    let html = "<table><thead><tr><th class='rank'>順位</th><th>所属</th><th>馬名</th><th>性別</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
+    top20.forEach((row, i) => {
+      let color = "";
+      if (row.gender === "牡") color = "color: blue;";
+      else if (row.gender === "牝") color = "color: red;";
+      else if (row.gender === "セ") color = "color: purple;";
+
+      html += `<tr>`;
+      html += `<td class='rank'>${i + 1}</td>`;
+      html += `<td class='left'>${row.member}</td>`;
+      html += `<td class='left'><a href="${row.link}" target="_blank" style="${color}">${row.horse}</a></td>`;
+      html += `<td class='left'>${row.gender}</td>`;
+      html += `<td class='left'>${row.record}</td>`;
+      html += `<td class='right'>${row.point.toLocaleString()}</td>`;
+      html += "</tr>";
+    });
+    html += "</tbody></table>";
+
+    document.getElementById("ranking-table").innerHTML = html;
+  }
+
+  loadTop20Ranking();
+</script>
 </body>
 </html>
