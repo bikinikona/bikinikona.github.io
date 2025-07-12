@@ -316,6 +316,7 @@ loadAdditionalCSV(
 
     let html = "<table class='fancy-table'><thead><tr><th style='width: 20px; text-align: center;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
     top20.forEach((row, i) => {
+      let gender = row.gender.trim();
       let color = "";
       if (row.gender === "牡") color = "color: blue;";
       else if (row.gender === "牝") color = "color: red;";
