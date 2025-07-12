@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -7,13 +8,14 @@
     body { font-family: sans-serif; background-color: #f0f8ff; padding: 20px; }
     h2 { color: #003366; border-bottom: 2px solid #ccc; padding-bottom: 5px; margin-top: 40px; }
     table { border-collapse: collapse; width: auto; background-color: white; margin-bottom: 20px; table-layout: fixed; }
-    th, td { border: 1px solid #aaa; padding: 6px; width: 120px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; }
+    th, td { border: 1px solid #aaa; padding: 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 14px; }
     th { background-color: #d0e0f0; }
     td.left { text-align: left; }
     td.right { text-align: right; }
     a { text-decoration: none; color: inherit; }
     .horse-name a { font-weight: bold; font-size: 1.1em; }
     .point-badge { display: inline-block; background-color: #003366; color: white; font-size: 0.8em; padding: 3px 8px; margin-left: 10px; border-radius: 10px; }
+
     .fancy-table table { width: auto; border-collapse: collapse; margin: 20px 0; background-color: #fff; }
     .fancy-table th { background-color: #003366; color: white; padding: 8px; }
     .fancy-table td { border: 1px solid #ccc; padding: 6px; text-align: center; }
@@ -21,84 +23,22 @@
     .fancy-table { max-width: 800px; margin-bottom: 40px; table-layout: auto; }
     .fancy-table td.left, .fancy-table th.left { text-align: left; }
     .fancy-table td.right, .fancy-table th.right { text-align: right; max-width: 60px; white-space: nowrap; }
+    .fancy-table td.rank, .fancy-table th.rank { width: 40px; }
   </style>
 </head>
 <body>
   <h1>2025-2026 指名馬一覧</h1>
   <div id="table-container">読み込み中...</div>
-  <script>
-    async function loadCSV() {
-      const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=678170996&single=true&output=csv');
-      const csvText = await response.text();
-      const parseCSV = (text) => {
-        const rows = [];
-        let inQuotes = false, row = [], field = '';
-        for (let i = 0; i < text.length; i++) {
-          const char = text[i];
-          const next = text[i + 1];
-          if (char === '"') {
-            if (inQuotes && next === '"') { field += '"'; i++; }
-            else { inQuotes = !inQuotes; }
-          } else if (char === ',' && !inQuotes) {
-            row.push(field); field = '';
-          } else if ((char === '\n' || char === '\r') && !inQuotes) {
-            if (field !== '' || row.length > 0) { row.push(field); rows.push(row); row = []; field = ''; }
-            if (char === '\r' && next === '\n') i++;
-          } else {
-            field += char;
-          }
-        }
-        if (field !== '' || row.length > 0) { row.push(field); rows.push(row); }
-        return rows;
-      };
-      const rows = parseCSV(csvText);
-      const headers = rows[0];
-      const data = rows.slice(1);
-      const grouped = {};
-      data.forEach(row => {
-        const member = row[0];
-        const horse = row[1];
-        const sire = row[2];
-        const dam = row[3];
-        const record = row[5];
-        const point = row[6];
-        const link = row[7];
-        const gender = row[8];
-        if (!grouped[member]) grouped[member] = [];
-        grouped[member].push({ horse, sire, dam, record, point, link, gender });
-      });
-      const memberTotals = {};
-      for (const member in grouped) {
-        let total = 0;
-        grouped[member].forEach(entry => {
-          const pt = parseInt(entry.point.replace(/[, ptPTｐｔ]/g, '')) || 0;
-          total += pt;
-        });
-        memberTotals[member] = total;
-      }
-      let html = "";
-      for (const member in grouped) {
-        html += `<h2>${member}<span class="point-badge">合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
-        html += "<table class='fancy-table'><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
-        grouped[member].forEach(entry => {
-          let colorStyle = "";
-          if (entry.gender === "牡") colorStyle = "color: blue;";
-          else if (entry.gender === "牝") colorStyle = "color: red;";
-          else if (entry.gender === "セ") colorStyle = "color: purple;";
-          html += `<tr style='${colorStyle}'>`;
-          html += `<td class='left horse-name'><a href="${entry.link}" target="_blank">${entry.horse}</a></td>`;
-          html += `<td class='left'>${entry.sire}</td>`;
-          html += `<td class='left'>${entry.dam}</td>`;
-          html += `<td class='left'>${entry.record}</td>`;
-          html += `<td class='right'>${entry.point}</td>`;
-          html += "</tr>";
-        });
-        html += "</tbody></table>";
-      }
-      document.getElementById("table-container").innerHTML = html;
-    }
-    loadCSV();
 
+  <hr style="margin: 40px 0; border: none; border-top: 3px solid #999;">
+  <h2>成績</h2>
+  <div id="summary-table" class="fancy-table">読み込み中...</div>
+
+  <hr style="margin: 40px 0; border: none; border-top: 3px dashed #ccc;">
+  <h2>馬ポイントランキング（上位20頭）</h2>
+  <div id="ranking-table" class="fancy-table">読み込み中...</div>
+
+  <script>
     async function loadAdditionalCSV(url, targetId, alignRule, titleRow = true, rowLimit = null, removeZeroPoint = false, sortColumnIndex = null) {
       const res = await fetch(url);
       const text = await res.text();
@@ -112,22 +52,21 @@
           return valB - valA;
         });
       }
-      let html = "<table class='fancy-table'><thead><tr><th>順位</th>";
+      let html = "<table class='fancy-table'><thead><tr><th class='rank'>順位</th>";
       headers.forEach(h => html += `<th>${h}</th>`);
       html += "</tr></thead><tbody>";
       let count = 0;
       for (const row of data) {
         const point = parseInt(row[headers.length - 1].replace(/[^\d]/g, '')) || 0;
         if (removeZeroPoint && point === 0) continue;
-        html += `<tr><td class="right">${count + 1}</td>`;
+        html += `<tr><td class="right rank">${count + 1}</td>`;
         row.forEach((cell, idx) => {
           let alignClass = 'right';
           if (alignRule === 'summary') alignClass = (idx === 0) ? 'left' : 'right';
           else if (alignRule === 'ranking') alignClass = (idx === 0 || idx === 1) ? 'left' : 'right';
           if (targetId === 'ranking-table' && idx === 1) {
-            const horseId = (row[2] || '').match(/\d+/);
-            const href = horseId ? `https://db.netkeiba.com/horse/${horseId[0]}` : '#';
-            html += `<td class="${alignClass}"><a href="${href}" target="_blank">${cell}</a></td>`;
+            const link = row[7] || "#";  // H列（index 7）をリンク先に
+            html += `<td class="${alignClass}"><a href="${link}" target="_blank">${cell}</a></td>`;
           } else {
             html += `<td class="${alignClass}">${cell}</td>`;
           }
@@ -149,6 +88,7 @@
       false,
       6
     );
+
     loadAdditionalCSV(
       'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv',
       'ranking-table',
@@ -159,12 +99,5 @@
       2
     );
   </script>
-
-  <hr style="margin: 40px 0; border: none; border-top: 3px solid #999;">
-  <h2>成績</h2>
-  <div id="summary-table" class="fancy-table">読み込み中...</div>
-  <hr style="margin: 40px 0; border: none; border-top: 3px dashed #ccc;">
-  <h2>馬ポイントランキング（上位20頭）</h2>
-  <div id="ranking-table" class="fancy-table">読み込み中...</div>
 </body>
 </html>
