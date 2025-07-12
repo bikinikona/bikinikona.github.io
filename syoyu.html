@@ -293,45 +293,42 @@ loadAdditionalCSV(
 
 
 <script>
-  async function loadRanking() {
-    const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv");
-    const text = await res.text();
-    const rows = text.trim().split("\n").map(row => row.split(","));
+ async function loadRanking() {
+  const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv");
+  const text = await res.text();
+  const rows = text.trim().split("\n").map(row => row.split(","));
 
-    const headers = rows[0];
- const data = rows.slice(1).map(row => {
-  return {
-   member: row[0],
+  const headers = rows[0];
+  const data = rows.slice(1).map(row => ({
+    member: row[0],
     horse: row[1],
     record: row[2],
-    point: row[3],     // ← 正しいポイント
-    link: row[4],      // ← URL
-    gender: row[5]     // ← 性別
-  };
-});
+    point: row[3],
+    link: row[4],
+    gender: row[5]
+  }));
 
-    const filtered = data.filter(d => d.point > 0);
-   // filtered.sort((a, b) => b.point - a.point);
-    const top20 = filtered.slice(0, 20);
+  const filtered = data.filter(d => parseInt(d.point.replace(/[^\d]/g, '')) > 0);
+  const top20 = filtered.slice(0, 20);
 
-    let html = "<table class='fancy-table'><thead><tr><th style='width: 20px; text-align: center;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
-    top20.forEach((row, i) => {
-      let gender = row.gender.trim();
-      let color = "";
-      if (row.gender === "牡") color = "color: blue;";
-      else if (row.gender === "牝") color = "color: red;";
-      else if (row.gender === "セ") color = "color: purple;";
+  let html = "<table class='fancy-table'><thead><tr><th style='width: 20px; text-align: center;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
+  top20.forEach((row, i) => {
+    let gender = row.gender.trim();
+    let color = "";
+    if (gender === "牡") color = "color: blue;";
+    else if (gender === "牝") color = "color: red;";
+    else if (gender === "セ") color = "color: purple;";
 
-      html += `<tr>`;
-      html += `<td style="width: 20px; text-align: center;">${i + 1}</td>`;
-      html += `<td class='left'>${row.member}</td>`;
-      html += `<td class='left'><a href="${row.link}" target="_blank" style="${color}">${row.horse}</a></td>`;
-      html += `<td class='left'>${row.record}</td>`;
-      html += `<td class='right'>${row.point.toLocaleString()}</td>`;
-      html += `</tr>`;
-    });
-    html += "</tbody></table>";
-    document.getElementById("ranking-table").innerHTML = html;
+    html += `<tr>`;
+    html += `<td style="width: 20px; text-align: center;">${i + 1}</td>`;
+    html += `<td class='left'>${row.member}</td>`;
+    html += `<td class='left'><a href="${row.link}" target="_blank" style="${color}">${row.horse}</a></td>`;
+    html += `<td class='left'>${row.record}</td>`;
+    html += `<td class='right'>${row.point}</td>`;
+    html += `</tr>`;
+  });
+  html += "</tbody></table>";
+  document.getElementById("ranking-table").innerHTML = html;
   }
 
   loadRanking();
