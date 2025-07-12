@@ -325,7 +325,7 @@ loadAdditionalCSV(
     filtered.sort((a, b) => b.point - a.point);
     const top20 = filtered.slice(0, 20);
 
-    let html = "<table class='fancy-table'><thead><tr><th style='width: 30px;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
+    let html = "<table class='fancy-table'><thead><tr><th class='right' style='width: 20px;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
     top20.forEach((row, i) => {
       let color = "";
       if (row.gender === "牡") color = "color: blue;";
