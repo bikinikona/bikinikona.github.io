@@ -294,7 +294,7 @@ loadAdditionalCSV(
 
 <script>
   async function loadRanking() {
-    const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1559290885&single=true&output=csv");
+    const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=678170996&single=true&output=csv");
     const text = await res.text();
     const rows = text.trim().split("\n").map(row => row.split(","));
 
