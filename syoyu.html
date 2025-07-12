@@ -299,18 +299,17 @@ loadAdditionalCSV(
     const rows = text.trim().split("\n").map(row => row.split(","));
 
     const headers = rows[0];
-    const data = rows.slice(1).map(row => {
-      return {
-        member: row[0],
-        horse: row[1],
-        sire: row[2],
-        dam: row[3],
-        record: row[5],
-        point: parseInt(row[6].replace(/[^\d]/g, '')) || 0,
-        link: row[7],
-        gender: row[8]
-      };
-    });
+ const data = rows.slice(1).map(row => {
+  return {
+    member: row[0],
+    horse: row[1],
+    sire: row[2],
+    record: row[3],
+    point: parseInt(row[4].replace(/[^\d]/g, '')) || 0,
+    link: row[5],
+    gender: row[6]
+  };
+});
 
     const filtered = data.filter(d => d.point > 0);
     filtered.sort((a, b) => b.point - a.point);
