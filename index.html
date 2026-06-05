@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -46,28 +45,52 @@
       color: white;
       font-size: 0.95rem;
     }
-    .link-buttons a.rank {
-      background-color: orange;
-    }
-    .link-buttons a.season {
-      background-color: slateblue;
+    .link-buttons a.rank { background-color: orange; }
+    .link-buttons a.season { background-color: slateblue; }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 10px 0 20px 0;
     }
     table {
-      width: 100%;
+      width: auto;
       min-width: 600px;
       border-collapse: collapse;
       background-color: white;
-      font-size: 0.9rem;
-      margin: 10px 0 20px 0;
+      font-size: 0.95rem;
+      margin: 0;
+      table-layout: auto;
     }
     th, td {
       border: 1px solid #ccc;
-      padding: 6px;
+      padding: 6px 8px;
       text-align: center;
+      white-space: nowrap;
     }
-    th {
-      background-color: #f2f2f2;
+    th { background-color: #f2f2f2; }
+    td.name-col, th.name-col {
+      text-align: left;
+      min-width: 80px;
     }
+    td.avg-point-col, th.avg-point-col {
+      width: 64px;
+      min-width: 64px;
+      max-width: 64px;
+      white-space: normal;
+      line-height: 1.15;
+    }
+    td.point-col, th.point-col {
+      min-width: 82px;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* CSVではスプレッドシートの塗りつぶし色は取得できないため、HTML側で簡易再現 */
+    tr.rank-1 td { background-color: #fff2cc; }
+    tr.rank-2 td { background-color: #e7e6e6; }
+    tr.rank-3 td { background-color: #fce4d6; }
+    tr.zero-row td { color: #888; background-color: #f7f7f7; }
   </style>
 </head>
 <body>
@@ -108,25 +131,93 @@
   </p>
 
   <script>
+    function parseCSV(text) {
+      const rows = [];
+      let row = [], field = '', inQuotes = false;
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            field += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          row.push(field);
+          field = '';
+        } else if ((char === '\n' || char === '\r') && !inQuotes) {
+          if (field !== '' || row.length > 0) {
+            row.push(field);
+            rows.push(row);
+            row = [];
+            field = '';
+          }
+          if (char === '\r' && next === '\n') i++;
+        } else {
+          field += char;
+        }
+      }
+      if (field !== '' || row.length > 0) {
+        row.push(field);
+        rows.push(row);
+      }
+      return rows;
+    }
+
+    function numberValue(text) {
+      return parseFloat(String(text).replace(/,/g, '').replace(/[^0-9.-]/g, '')) || 0;
+    }
+
     async function loadCSV(id, url) {
       const response = await fetch(url);
       const csv = await response.text();
-      const rows = csv.trim().split("\n").map(r => r.split(","));
+      const rows = parseCSV(csv.trim());
       const table = document.createElement("table");
+      const headers = rows[0] || [];
 
       rows.forEach((row, i) => {
         const tr = document.createElement("tr");
-        row.forEach(cell => {
+
+        // 通算成績の色分け。CSVではシートの塗りつぶし色が来ないため、HTML側で簡易着色。
+        // 行内に 1 / 2 / 3 の順位セルがあれば、金銀銅っぽく塗る。
+        if (i > 0 && id === "csv-kako") {
+          const rankCell = row.find(cell => /^[123]$/.test(String(cell).trim()));
+          if (rankCell === "1") tr.classList.add("rank-1");
+          if (rankCell === "2") tr.classList.add("rank-2");
+          if (rankCell === "3") tr.classList.add("rank-3");
+          if (row.every(cell => numberValue(cell) === 0 || String(cell).trim() === "")) tr.classList.add("zero-row");
+        }
+
+        row.forEach((cell, idx) => {
           const el = document.createElement(i === 0 ? "th" : "td");
-          el.textContent = cell;
+          const header = headers[idx] || "";
+
+          // 見出しが長くて幅を食うので、表示名だけ短くする。
+          el.textContent = (i === 0 && header === "平均ポイント") ? "平均P" : cell;
+
+          if (idx === 0 || header === "名前" || header === "メンバー") {
+            el.classList.add("name-col");
+          }
+          if (header === "平均ポイント") {
+            el.classList.add("avg-point-col");
+          }
+          if (header.includes("ポイント") && header !== "平均ポイント") {
+            el.classList.add("point-col");
+          }
           tr.appendChild(el);
         });
         table.appendChild(tr);
       });
 
+      const wrap = document.createElement("div");
+      wrap.className = "table-wrap";
+      wrap.appendChild(table);
+
       const container = document.getElementById(id);
       container.innerHTML = "";
-      container.appendChild(table);
+      container.appendChild(wrap);
     }
 
     loadCSV("csv-kako", "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=0&single=true&output=csv");
