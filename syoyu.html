@@ -249,6 +249,9 @@ async function loadAdditionalCSV(url, targetId, alignRule, titleRow = true, rowL
   }
 
   let html = "<table class='fancy-table'><thead><tr>";
+  if (alignRule === 'summary') {
+    html += `<th style="width: 40px; text-align: center;">順位</th>`;
+  }
   headers.forEach(h => html += `<th>${h}</th>`);
   html += "</tr></thead><tbody>";
 
@@ -258,6 +261,9 @@ async function loadAdditionalCSV(url, targetId, alignRule, titleRow = true, rowL
     if (removeZeroPoint && point === 0) continue;
 
     html += "<tr>";
+    if (alignRule === 'summary') {
+      html += `<td style="width: 40px; text-align: center;">${count + 1}</td>`;
+    }
     row.forEach((cell, idx) => {
       let alignClass = 'right';
       if (alignRule === 'summary') {
