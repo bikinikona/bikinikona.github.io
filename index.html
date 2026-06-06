@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0.5, maximum-scale=5, user-scalable=yes" />
   <title>ミウターカ帝国ＰＯＧ</title>
   <style>
     body {
@@ -80,6 +80,18 @@
       background-color: #ef5350;
       color: white;
       font-weight: bold;
+    }
+
+
+    /* スマホでピンチアウトした時に、表の右側へ少し余白を作る。
+       初期表示や色付けには影響しない、見えない余白用。 */
+    @media (max-width: 700px) {
+      body::after {
+        content: "";
+        display: block;
+        width: 720px;
+        height: 1px;
+      }
     }
   </style>
 </head>
