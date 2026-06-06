@@ -68,6 +68,19 @@
     th {
       background-color: #f2f2f2;
     }
+
+    /* 通算成績のG1勝利数だけに使う色。ほかの表・列には使わない */
+    #csv-kako table td.g1-count-1 {
+      background-color: #fff176;
+    }
+    #csv-kako table td.g1-count-2 {
+      background-color: #ffb74d;
+    }
+    #csv-kako table td.g1-count-3 {
+      background-color: #ef5350;
+      color: white;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -108,6 +121,41 @@
   </p>
 
   <script>
+    function colorG1CountCells(table) {
+      // 対象は【通算成績】だけ。
+      // 0列目: 名前、1列目: 平均ポイント、2列目: 過去5年順位 は絶対に触らない。
+      // 3列目以降（ダ〜阪）のG1勝利数だけを判定する。
+      const rows = table.querySelectorAll("tr");
+
+      rows.forEach((tr, rowIndex) => {
+        if (rowIndex === 0) return; // 見出し行は触らない
+
+        const cells = tr.querySelectorAll("td");
+
+        cells.forEach((td, columnIndex) => {
+          if (columnIndex < 3) return;
+
+          const text = td.textContent.trim();
+
+          // 数字だけのセル以外は触らない。誤作動防止。
+          if (!/^\d+$/.test(text)) return;
+
+          const value = Number(text);
+
+          td.classList.remove("g1-count-1", "g1-count-2", "g1-count-3");
+
+          if (value >= 3) {
+            td.classList.add("g1-count-3");
+          } else if (value === 2) {
+            td.classList.add("g1-count-2");
+          } else if (value === 1) {
+            td.classList.add("g1-count-1");
+          }
+          // 0は白のまま
+        });
+      });
+    }
+
     async function loadCSV(id, url) {
       const response = await fetch(url);
       const csv = await response.text();
@@ -127,6 +175,10 @@
       const container = document.getElementById(id);
       container.innerHTML = "";
       container.appendChild(table);
+
+      if (id === "csv-kako") {
+        colorG1CountCells(table);
+      }
     }
 
     loadCSV("csv-kako", "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=0&single=true&output=csv");
