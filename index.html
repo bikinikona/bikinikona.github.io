@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=720, initial-scale=1, minimum-scale=0.5, maximum-scale=5, user-scalable=yes" />
+  <meta name="viewport" content="width=720, initial-scale=1, minimum-scale=0.1, maximum-scale=5, user-scalable=yes" />
   <title>ミウターカ帝国ＰＯＧ</title>
   <style>
     body {
@@ -11,8 +11,10 @@
       color: black;
       font-family: 'Helvetica Neue', sans-serif;
       margin: 20px;
-      min-width: 680px;
-      max-width: 900px;
+      width: 1200px; /* 初期表示は変えず、縮小した時に右側の余白を大きく見せるための安全幅 */
+    }
+    .page-wrap {
+      width: 680px; /* 初期表示の見た目はここで固定 */
     }
     h1 {
       color: slateblue;
@@ -88,6 +90,7 @@
   </style>
 </head>
 <body>
+  <div class="page-wrap">
   <h1>★ミウターカ帝国ＰＯＧ★２６－２７</h1>
   <p>2026.6.6更新。</p>
   <a class="button-main" href="syoyu.html">▶ 26-27 指名馬一覧</a>
@@ -188,5 +191,6 @@
     loadCSV("csv-kako", "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=0&single=true&output=csv");
     loadCSV("csv-2023", "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=1242511078&single=true&output=csv");
   </script>
+  </div>
 </body>
 </html>
