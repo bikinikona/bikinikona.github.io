@@ -149,6 +149,42 @@
 #summary-table table.summary-table th:nth-child(6),
 #summary-table table.summary-table td:nth-child(6) { min-width: 80px; }
 
+
+/* 表の整列ルールを明確化：ここだけ見れば直せる */
+.fancy-table th {
+  text-align: center !important;
+}
+
+/* 指名馬一覧：馬名・父名・母名は左、ポイントは右 */
+.member-table td:nth-child(1),
+.member-table td:nth-child(2),
+.member-table td:nth-child(3) {
+  text-align: left !important;
+}
+.member-table td:nth-child(5) {
+  text-align: right !important;
+}
+
+/* 成績表：名前は中央、ポイント合計は右、そのほかは中央 */
+#summary-table table.summary-table td {
+  text-align: center !important;
+}
+#summary-table table.summary-table td:nth-child(3) {
+  text-align: right !important;
+}
+
+/* 馬ポイントランキング：所属・成績は中央、馬名は左、ポイントは右 */
+#ranking-table table.ranking-table td:nth-child(2),
+#ranking-table table.ranking-table td:nth-child(4) {
+  text-align: center !important;
+}
+#ranking-table table.ranking-table td:nth-child(3) {
+  text-align: left !important;
+}
+#ranking-table table.ranking-table td:nth-child(5) {
+  text-align: right !important;
+}
+
 </style>
 </head>
 <body>
@@ -229,7 +265,7 @@
 let html = "";
       for (const member in grouped) {
         html += `<h2>${member}<span class="point-badge">合計: ${memberTotals[member].toLocaleString()}pt</span></h2>`;
-        html += "<table class='fancy-table'><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
+        html += "<table class='fancy-table member-table'><thead><tr><th>馬名</th><th>父名</th><th>母名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
         grouped[member].forEach(entry => {
           let colorStyle = "";
           if (entry.gender === "牡") colorStyle = "color: blue;";
@@ -240,7 +276,7 @@ let html = "";
           html += `<td class='left horse-name'><a href="${entry.link}">${entry.horse}</a></td>`;
           html += `<td class='left'>${entry.sire}</td>`;
           html += `<td class='left'>${entry.dam}</td>`;
-          html += `<td class='left'>${entry.record}</td>`;
+          html += `<td>${entry.record}</td>`;
           html += `<td class='right'>${entry.point}</td>`;
           html += "</tr>";
         });
@@ -392,7 +428,7 @@ loadSummaryCSV(
   const filtered = data.filter(d => parseInt(d.point.replace(/[^\d]/g, '')) > 0);
   const top20 = filtered.slice(0, 20);
 
-  let html = "<table class='fancy-table'><thead><tr><th style='width: 20px; text-align: center;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
+  let html = "<table class='fancy-table ranking-table'><thead><tr><th style='width: 20px; text-align: center;'>順位</th><th>所属</th><th>馬名</th><th>成績</th><th>ポイント</th></tr></thead><tbody>";
   top20.forEach((row, i) => {
     let gender = row.gender.trim();
     let color = "";
@@ -402,9 +438,9 @@ loadSummaryCSV(
 
     html += `<tr>`;
     html += `<td style="width: 20px; text-align: center;">${i + 1}</td>`;
-    html += `<td class='left'>${row.member}</td>`;
+    html += `<td>${row.member}</td>`;
     html += `<td class='left'><a href="${row.link}" style="${color}">${row.horse}</a></td>`;
-    html += `<td class='left'>${row.record}</td>`;
+    html += `<td>${row.record}</td>`;
     html += `<td class='right'>${row.point}</td>`;
     html += `</tr>`;
   });
