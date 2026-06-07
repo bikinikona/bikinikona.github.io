@@ -3,8 +3,6 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <link rel="preconnect" href="https://docs.google.com">
   <title>26-27 指名馬一覧</title>
   <style>
     body {
@@ -118,42 +116,38 @@
 }
 
 
-/* 成績表専用：Safariで幅が詰まって文字が切れないように固定 */
-.table-scroll {
-  width: 100%;
+/* 成績表だけ調整：元の全体バランスは崩さない */
+#summary-table {
+  max-width: none;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
-#summary-table {
-  max-width: none;
+#summary-table table.summary-table {
+  table-layout: auto;
+  width: auto;
+  min-width: 720px;
 }
-#summary-table table.summary-stats {
-  width: 620px;
-  min-width: 620px;
-  table-layout: fixed;
-  margin-left: 0;
-}
-#summary-table table.summary-stats th,
-#summary-table table.summary-stats td {
+#summary-table table.summary-table th,
+#summary-table table.summary-table td {
   text-align: center !important;
+  width: auto;
+  max-width: none !important;
   white-space: nowrap;
   overflow: visible;
   text-overflow: clip;
-  padding: 6px 8px;
-  box-sizing: border-box;
 }
-#summary-table table.summary-stats th:nth-child(1),
-#summary-table table.summary-stats td:nth-child(1) { width: 44px; }
-#summary-table table.summary-stats th:nth-child(2),
-#summary-table table.summary-stats td:nth-child(2) { width: 95px; }
-#summary-table table.summary-stats th:nth-child(3),
-#summary-table table.summary-stats td:nth-child(3) { width: 120px; }
-#summary-table table.summary-stats th:nth-child(4),
-#summary-table table.summary-stats td:nth-child(4) { width: 100px; }
-#summary-table table.summary-stats th:nth-child(5),
-#summary-table table.summary-stats td:nth-child(5) { width: 85px; }
-#summary-table table.summary-stats th:nth-child(6),
-#summary-table table.summary-stats td:nth-child(6) { width: 80px; }
+#summary-table table.summary-table th:nth-child(1),
+#summary-table table.summary-table td:nth-child(1) { min-width: 45px; }
+#summary-table table.summary-table th:nth-child(2),
+#summary-table table.summary-table td:nth-child(2) { min-width: 110px; }
+#summary-table table.summary-table th:nth-child(3),
+#summary-table table.summary-table td:nth-child(3) { min-width: 120px; }
+#summary-table table.summary-table th:nth-child(4),
+#summary-table table.summary-table td:nth-child(4) { min-width: 100px; }
+#summary-table table.summary-table th:nth-child(5),
+#summary-table table.summary-table td:nth-child(5) { min-width: 80px; }
+#summary-table table.summary-table th:nth-child(6),
+#summary-table table.summary-table td:nth-child(6) { min-width: 80px; }
 
 </style>
 </head>
@@ -315,15 +309,13 @@ async function loadSummaryCSV(url, targetId) {
 
   const rows = parseCSV(text);
   const headers = rows[0] || [];
-  let data = rows.slice(1).filter(row => row.some(cell => cell !== ''));
+  const data = rows.slice(1).filter(row => row.some(cell => cell !== ''));
 
   const normalize = (value) => String(value || '').replace(/\s/g, '').toLowerCase();
-  const findIndex = (...patterns) => {
-    return headers.findIndex(header => {
-      const h = normalize(header);
-      return patterns.some(pattern => pattern.test(h));
-    });
-  };
+  const findIndex = (...patterns) => headers.findIndex(header => {
+    const h = normalize(header);
+    return patterns.some(pattern => pattern.test(h));
+  });
 
   const nameIdx = findIndex(/名前/, /指名者/, /メンバー/, /所属/);
   const pointIdx = findIndex(/ポイント合計/, /合計ポイント/, /総ポイント/, /合計/, /point/, /pt/);
@@ -340,7 +332,7 @@ async function loadSummaryCSV(url, targetId) {
 
   data.sort((a, b) => getNumber(getCell(b, pointSortIdx)) - getNumber(getCell(a, pointSortIdx)));
 
-  let html = "<div class='table-scroll'><table class='fancy-table summary-stats'><thead><tr>";
+  let html = "<table class='fancy-table summary-table'><thead><tr>";
   html += `<th>順位</th>`;
   html += `<th>名前</th>`;
   html += `<th>ポイント合計</th>`;
@@ -350,28 +342,24 @@ async function loadSummaryCSV(url, targetId) {
   html += "</tr></thead><tbody>";
 
   data.forEach((row, i) => {
-    const name = getCell(row, nameIdx);
-    const point = getCell(row, pointIdx >= 0 ? pointIdx : pointSortIdx);
     const record = [
       getCell(row, firstIdx, '0'),
       getCell(row, secondIdx, '0'),
       getCell(row, thirdIdx, '0'),
       getCell(row, otherIdx, '0')
     ].map(v => getNumber(v)).join('-');
-    const starts = getCell(row, startsIdx);
-    const winRate = getCell(row, winRateIdx);
 
     html += "<tr>";
     html += `<td>${i + 1}</td>`;
-    html += `<td>${name}</td>`;
-    html += `<td>${point}</td>`;
+    html += `<td>${getCell(row, nameIdx)}</td>`;
+    html += `<td>${getCell(row, pointIdx >= 0 ? pointIdx : pointSortIdx)}</td>`;
     html += `<td>${record}</td>`;
-    html += `<td>${starts}</td>`;
-    html += `<td>${winRate}</td>`;
+    html += `<td>${getCell(row, startsIdx)}</td>`;
+    html += `<td>${getCell(row, winRateIdx)}</td>`;
     html += "</tr>";
   });
 
-  html += "</tbody></table></div>";
+  html += "</tbody></table>";
   document.getElementById(targetId).innerHTML = html;
 }
 
