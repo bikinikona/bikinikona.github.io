@@ -3,6 +3,8 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <link rel="preconnect" href="https://docs.google.com">
   <title>26-27 指名馬一覧</title>
   <style>
     body {
@@ -114,6 +116,44 @@
   max-width: 60px;
   white-space: nowrap;
 }
+
+
+/* 成績表専用：Safariで幅が詰まって文字が切れないように固定 */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+#summary-table {
+  max-width: none;
+}
+#summary-table table.summary-stats {
+  width: 620px;
+  min-width: 620px;
+  table-layout: fixed;
+  margin-left: 0;
+}
+#summary-table table.summary-stats th,
+#summary-table table.summary-stats td {
+  text-align: center !important;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  padding: 6px 8px;
+  box-sizing: border-box;
+}
+#summary-table table.summary-stats th:nth-child(1),
+#summary-table table.summary-stats td:nth-child(1) { width: 44px; }
+#summary-table table.summary-stats th:nth-child(2),
+#summary-table table.summary-stats td:nth-child(2) { width: 95px; }
+#summary-table table.summary-stats th:nth-child(3),
+#summary-table table.summary-stats td:nth-child(3) { width: 120px; }
+#summary-table table.summary-stats th:nth-child(4),
+#summary-table table.summary-stats td:nth-child(4) { width: 100px; }
+#summary-table table.summary-stats th:nth-child(5),
+#summary-table table.summary-stats td:nth-child(5) { width: 85px; }
+#summary-table table.summary-stats th:nth-child(6),
+#summary-table table.summary-stats td:nth-child(6) { width: 80px; }
 
 </style>
 </head>
@@ -300,13 +340,13 @@ async function loadSummaryCSV(url, targetId) {
 
   data.sort((a, b) => getNumber(getCell(b, pointSortIdx)) - getNumber(getCell(a, pointSortIdx)));
 
-  let html = "<table class='fancy-table'><thead><tr>";
-  html += `<th style="width: 40px; text-align: center;">順位</th>`;
-  html += `<th class="left">名前</th>`;
-  html += `<th class="right">ポイント合計</th>`;
-  html += `<th class="right">成績</th>`;
-  html += `<th class="right">出走数</th>`;
-  html += `<th class="right">勝率</th>`;
+  let html = "<div class='table-scroll'><table class='fancy-table summary-stats'><thead><tr>";
+  html += `<th>順位</th>`;
+  html += `<th>名前</th>`;
+  html += `<th>ポイント合計</th>`;
+  html += `<th>成績</th>`;
+  html += `<th>出走数</th>`;
+  html += `<th>勝率</th>`;
   html += "</tr></thead><tbody>";
 
   data.forEach((row, i) => {
@@ -322,16 +362,16 @@ async function loadSummaryCSV(url, targetId) {
     const winRate = getCell(row, winRateIdx);
 
     html += "<tr>";
-    html += `<td style="width: 40px; text-align: center;">${i + 1}</td>`;
-    html += `<td class="left">${name}</td>`;
-    html += `<td class="right">${point}</td>`;
-    html += `<td class="right">${record}</td>`;
-    html += `<td class="right">${starts}</td>`;
-    html += `<td class="right">${winRate}</td>`;
+    html += `<td>${i + 1}</td>`;
+    html += `<td>${name}</td>`;
+    html += `<td>${point}</td>`;
+    html += `<td>${record}</td>`;
+    html += `<td>${starts}</td>`;
+    html += `<td>${winRate}</td>`;
     html += "</tr>";
   });
 
-  html += "</tbody></table>";
+  html += "</tbody></table></div>";
   document.getElementById(targetId).innerHTML = html;
 }
 
