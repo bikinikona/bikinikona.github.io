@@ -233,65 +233,112 @@ let html = "";
 <div id="ranking-table" class="fancy-table">読み込み中...</div>
 
 <script>
-async function loadAdditionalCSV(url, targetId, alignRule, titleRow = true, rowLimit = null, removeZeroPoint = false, sortColumnIndex = null) {
+async function loadSummaryCSV(url, targetId) {
   const res = await fetch(url);
   const text = await res.text();
-  const rows = text.trim().split("\n").map(r => r.split(","));
-  const headers = titleRow ? rows[0] : [];
-  let data = titleRow ? rows.slice(1) : rows;
 
-  if (sortColumnIndex !== null) {
-    data.sort((a, b) => {
-      const valA = parseInt(a[sortColumnIndex].replace(/[^\d]/g, '')) || 0;
-      const valB = parseInt(b[sortColumnIndex].replace(/[^\d]/g, '')) || 0;
-      return valB - valA;
+  const parseCSV = (csv) => {
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for (let i = 0; i < csv.length; i++) {
+      const char = csv[i];
+      const next = csv[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && next === '"') {
+          field += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        row.push(field.trim());
+        field = '';
+      } else if ((char === '\n' || char === '\r') && !inQuotes) {
+        if (field !== '' || row.length > 0) {
+          row.push(field.trim());
+          rows.push(row);
+          row = [];
+          field = '';
+        }
+        if (char === '\r' && next === '\n') i++;
+      } else {
+        field += char;
+      }
+    }
+    if (field !== '' || row.length > 0) {
+      row.push(field.trim());
+      rows.push(row);
+    }
+    return rows;
+  };
+
+  const rows = parseCSV(text);
+  const headers = rows[0] || [];
+  let data = rows.slice(1).filter(row => row.some(cell => cell !== ''));
+
+  const normalize = (value) => String(value || '').replace(/\s/g, '').toLowerCase();
+  const findIndex = (...patterns) => {
+    return headers.findIndex(header => {
+      const h = normalize(header);
+      return patterns.some(pattern => pattern.test(h));
     });
-  }
+  };
+
+  const nameIdx = findIndex(/名前/, /指名者/, /メンバー/, /所属/);
+  const pointIdx = findIndex(/ポイント合計/, /合計ポイント/, /総ポイント/, /合計/, /point/, /pt/);
+  const firstIdx = findIndex(/1着/, /１着/, /一着/);
+  const secondIdx = findIndex(/2着/, /２着/, /二着/);
+  const thirdIdx = findIndex(/3着/, /３着/, /三着/);
+  const otherIdx = findIndex(/着外/, /4着/, /４着/, /以下/);
+  const startsIdx = findIndex(/出走数/, /出走/);
+  const winRateIdx = findIndex(/勝率/);
+
+  const getCell = (row, idx, fallback = '') => idx >= 0 ? (row[idx] || fallback) : fallback;
+  const getNumber = (value) => parseInt(String(value || '').replace(/[^\d-]/g, '')) || 0;
+  const pointSortIdx = pointIdx >= 0 ? pointIdx : headers.length - 1;
+
+  data.sort((a, b) => getNumber(getCell(b, pointSortIdx)) - getNumber(getCell(a, pointSortIdx)));
 
   let html = "<table class='fancy-table'><thead><tr>";
-  if (alignRule === 'summary') {
-    html += `<th style="width: 40px; text-align: center;">順位</th>`;
-  }
-  headers.forEach(h => html += `<th>${h}</th>`);
+  html += `<th style="width: 40px; text-align: center;">順位</th>`;
+  html += `<th class="left">名前</th>`;
+  html += `<th class="right">ポイント合計</th>`;
+  html += `<th class="right">成績</th>`;
+  html += `<th class="right">出走数</th>`;
+  html += `<th class="right">勝率</th>`;
   html += "</tr></thead><tbody>";
 
-  let count = 0;
-  for (const row of data) {
-    const point = parseInt(row[headers.length - 1].replace(/[^\d]/g, '')) || 0;
-    if (removeZeroPoint && point === 0) continue;
+  data.forEach((row, i) => {
+    const name = getCell(row, nameIdx);
+    const point = getCell(row, pointIdx >= 0 ? pointIdx : pointSortIdx);
+    const record = [
+      getCell(row, firstIdx, '0'),
+      getCell(row, secondIdx, '0'),
+      getCell(row, thirdIdx, '0'),
+      getCell(row, otherIdx, '0')
+    ].map(v => getNumber(v)).join('-');
+    const starts = getCell(row, startsIdx);
+    const winRate = getCell(row, winRateIdx);
 
     html += "<tr>";
-    if (alignRule === 'summary') {
-      html += `<td style="width: 40px; text-align: center;">${count + 1}</td>`;
-    }
-    row.forEach((cell, idx) => {
-      let alignClass = 'right';
-      if (alignRule === 'summary') {
-        alignClass = (idx === 0) ? 'left' : 'right';
-      } else if (alignRule === 'ranking') {
-        alignClass = (idx === 0 || idx === 1) ? 'left' : 'right';
-      }
-      html += `<td class="${alignClass}">${cell}</td>`;
-    });
+    html += `<td style="width: 40px; text-align: center;">${i + 1}</td>`;
+    html += `<td class="left">${name}</td>`;
+    html += `<td class="right">${point}</td>`;
+    html += `<td class="right">${record}</td>`;
+    html += `<td class="right">${starts}</td>`;
+    html += `<td class="right">${winRate}</td>`;
     html += "</tr>";
-
-    count++;
-    if (rowLimit && count >= rowLimit) break;
-  }
+  });
 
   html += "</tbody></table>";
   document.getElementById(targetId).innerHTML = html;
 }
 
 // 成績表
-loadAdditionalCSV(
+loadSummaryCSV(
   'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaLvOcmHtlpogDiYQtvcGQD15vhTxms_YVyBK2nFs7JKBYhVVOqdyD8bEG9TfGaoB_ROitY7CnOP_h/pub?gid=168257426&single=true&output=csv',
-  'summary-table',
-  'summary',
-  true,
-  null,
-  false,
-  6
+  'summary-table'
 );
 
 // 馬ランキング
